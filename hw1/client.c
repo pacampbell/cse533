@@ -115,10 +115,10 @@ bool run(char *ipaddress) {
 			// Check the option the user selected
 			switch(option) {
 				case 1:
-					echo(ipaddress);
+					echo_client(ipaddress);
 					break;
 				case 2:
-					time(ipaddress);
+					time_client(ipaddress);
 					break;
 				case 3:
 					running = false;
@@ -140,7 +140,7 @@ bool run(char *ipaddress) {
 	return success;
 }
 
-void echo(char *ipaddress) {
+void echo_client(char *ipaddress) {
 	// int stat;
 	int fd[2];
 	// Create half duplex pipe
@@ -179,7 +179,7 @@ void echo(char *ipaddress) {
 	}
 }
 
-void time(char *ipaddress) {
+void time_client(char *ipaddress) {
 	// int stat;
 	int fd[2];
 	// Create half duplex pipe

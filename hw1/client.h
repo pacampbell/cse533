@@ -47,11 +47,11 @@ bool run(char *ipaddress);
  * Starts echocli in xterm.
  * @param ipaddress Address of node to connect to.
  */
-void echo(char *ipaddress);
+void echo_client(char *ipaddress);
 
 /**
  * Starts the timecli in xterm.
  * @param ipaddress Address of node to connect to.
  */
-void time(char *ipaddress);
+void time_client(char *ipaddress);
 #endif
