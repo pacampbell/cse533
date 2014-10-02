@@ -229,5 +229,3 @@ int setupServerSocket(int port) {
 	// Return the server socket.
 	return server_sock;
 }
-
-

@@ -92,38 +92,46 @@ void usage(char *bin) {
 bool run(char *ipaddress) {
 	bool success = true;
 	if(ipaddress != NULL) {
-		char line[256];
+		// char line[256];
+		int option;
 		bool running = true;
 		bool valid;
-		char input[6];
+		char line[256];
+		// Print out starting menu
+		printf("1) echo\n2) time\n3) quit\n> ");
 		while(running) {
-			printf("1) echo\n");
-			printf("2) time\n");
-			printf("3) quit\n");
-			printf("> ");
 			fgets(line, sizeof(line), stdin);
-			valid = sscanf(line, "%d", input);
+			valid = sscanf(line, "%d", &option);
 			// Check to make sure user gave us an integer
 			if(!valid) {
-				// Attempt to remove the newline
-				size_t len = strlen(line) - 1;
-				if(len >= 0 && line[len] == '\n') {
-					line[len] = '\0';
-				}
 				// Print out the invalid option.
+				int len = strlen(line) - 1;
+				line[len] = '\0';
 				printf("Invalid option '%s' provided\n\n", line);
+				// Prints menu and prompts for input again
+				printf("1) echo\n2) time\n3) quit\n> ");
 				continue;
 			}
-			// Compare the string the user entered
-			if(!strcmp(input, "echo")) {
-				echo(ipaddress);
-			} else if(!strcmp(input, "time")) {
-				time(ipaddress);
-			} else if(!strcmp(input, "quit")) {
-				running = false;
-			} else {
-				printf("\nInvalid option '%s' provided\n\n", input);
+			// Check the option the user selected
+			switch(option) {
+				case 1:
+					echo(ipaddress);
+					break;
+				case 2:
+					time(ipaddress);
+					break;
+				case 3:
+					running = false;
+					break;
+				case 0:
+					// newline was provided so just print prompt again
+					printf("> ");
+					continue;
+				default:
+					printf("\nInvalid option '%d' provided\n\n", option);
+					break;
 			}
+			printf("1) echo\n2) time\n3) quit\n> ");
 		}
 	} else {
 		fprintf(stderr, "NULL ipaddress passed to run.\n");
