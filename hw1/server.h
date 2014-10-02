@@ -53,13 +53,6 @@ void *echo_accept_thread(void *socket_fd);
 void *tod_accept_thread(void *socket_fd);
 
 /**
- * Handles signals passed to the program.
- * ctrl-c, ctrl-z, etc.
- * @param signal Signal to intercept
- */
-void interruptHandeler(int signal);
-
-/**
  * Helper function for setting up a server socket.
  * @param port Port number to bind server socket to.
  */

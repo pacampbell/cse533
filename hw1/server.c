@@ -5,9 +5,6 @@ static pthread_t echo_server_thread, tod_server_thread;
 int main(int argc, char *argv[]) {
 	int echo_socket, time_socket;
 
-	// Set up signal handler for ctrl-c
-	signal(SIGINT, interruptHandeler);
-
 	// Set up the echo socket
 	echo_socket = setupServerSocket(PORT_ECHO);
 	if(echo_socket < 0) {
@@ -184,18 +181,6 @@ void *serve_time_client(void *socket_fd) {
 	close(fd);
 	debug("Closed time client fd\n");
 	return NULL;
-}
-
-void interruptHandeler(int signal) {
-	// Set the running state of the server to false
-	// so we can clean up and close the server and socket
-	if(pthread_cancel(echo_server_thread) < 0) {
-		perror("Failed to stop the echo server thread.");
-	}
-	if(pthread_cancel(tod_server_thread) < 0) {
-		perror("Failed to stop the time server thread.");
-	}
-	debug("Sent the thread interrupt signal.\n");
 }
 
 int setupServerSocket(int port) {
