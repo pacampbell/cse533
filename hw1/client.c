@@ -100,6 +100,7 @@ bool run(char *ipaddress) {
 		// Print out starting menu
 		printf("1) echo\n2) time\n3) quit\n> ");
 		while(running) {
+			option = 0;
 			fgets(line, sizeof(line), stdin);
 			valid = sscanf(line, "%d", &option);
 			// Check to make sure user gave us an integer
