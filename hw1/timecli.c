@@ -5,6 +5,8 @@ int main(int argc, char *argv[]) {
 	char response[256];
     int sock, read;
     struct sockaddr_in server;
+    // Pipe to write back to main client
+	int pipe_fd = atoi(argv[2]);
     // select vars
     fd_set rset;
     // Check arguements
@@ -37,6 +39,8 @@ int main(int argc, char *argv[]) {
 	    	if(read == 0 || read < 0) {
 	    		running = false;
 	    		debug("Read 0 bytes; server hung up.\n");
+	    		// Write to pipe
+	    		write(pipe_fd, "Read 0 bytes; server hung up.\n", 34);
 	        	// TODO: handle different errors
 	        	debug("Press any key to continue..\n");
 	        	#ifdef DEBUG

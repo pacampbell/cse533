@@ -3,7 +3,9 @@
 int main(int argc, char *argv[]) {
 	bool running = true, waiting = false;
 	char line[256], response[256];
-	// SOcket variables
+	// Pipe to write back to main client
+	int pipe_fd = atoi(argv[2]);
+	// Socket variables
     int sock, read;
     struct sockaddr_in server;
     // select vars
@@ -29,8 +31,6 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-	// int output_fd = atoi(argv[2]);
-	
 	fprintf(stdout, "> ");
 	fflush(stdout);
 	while(running) {
@@ -58,9 +58,10 @@ int main(int argc, char *argv[]) {
 			read = recv(sock, response, sizeof(response) - 1, 0);
 			if(read <= 0) {
 				running = false;
-				debug("Read 0 bytes; server hung up\n");
+				debug("Read %d bytes; server hung up\n", read);
 				// TODO: Handle pipe info
-				// write(output_fd, line, 256);
+				snprintf(response, sizeof(response), "Read %d bytes; server hung up\n", read);
+				write(pipe_fd, response, strlen(response));
 				debug("Press any key to continue..\n");
 				#ifdef DEBUG
 	        		getchar();
@@ -80,6 +81,7 @@ int main(int argc, char *argv[]) {
 
 	// Close open socket
 	close(sock);
+	close(pipe_fd);
 	debug("Closed socket FD\n");
 
 	return EXIT_SUCCESS;

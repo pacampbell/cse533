@@ -142,8 +142,10 @@ bool run(char *ipaddress) {
 }
 
 void echo_client(char *ipaddress) {
-	// int stat;
-	int fd[2];
+	int fd[2], in;
+	// Set for select
+	fd_set rset;
+	bool running = true;
 	// Create half duplex pipe
 	pipe(fd);
 	// Now fork the process
@@ -168,9 +170,29 @@ void echo_client(char *ipaddress) {
 			// In parent process
 			close(fd[1]);
 			char buffer[1024];
-			// TODO: Write back status notifications
-			while(read(fd[0], buffer, 1024) > 0) {
-				printf("< %s", buffer);
+			while(running) {
+				FD_ZERO(&rset);
+				FD_SET(fd[0], &rset);
+				FD_SET(STDIN_FILENO, &rset);
+				select(fd[0] + 1, &rset, NULL, NULL, NULL);
+				if(FD_ISSET(fd[0], &rset)) {
+					in = read(fd[0], buffer, 1024);
+					if(in > 0) {
+						printf("< %s", buffer);		
+					} else if(in == 0) {
+						printf("< Child closed the pipe.\n");
+						running = false;
+					} else {
+						perror("Aborted");
+						running = false;
+					}
+				}
+
+				if(FD_ISSET(STDIN_FILENO, &rset)) {
+					printf("Interact with the xterm window\n");
+					// Consume characters typed into the parent
+					while(fgetc(stdin) != '\n') ;
+				}
 			}
 			// Close the input fd
 			close(fd[0]);
@@ -181,8 +203,10 @@ void echo_client(char *ipaddress) {
 }
 
 void time_client(char *ipaddress) {
-	// int stat;
-	int fd[2];
+	int fd[2], in;
+	// Set for select
+	fd_set rset;
+	bool running = true;
 	// Create half duplex pipe
 	pipe(fd);
 	// Now fork the process
@@ -207,9 +231,29 @@ void time_client(char *ipaddress) {
 			// In parent process
 			close(fd[1]);
 			char buffer[1024];
-			// TODO: Write back status notifications
-			while(read(fd[0], buffer, 1024) > 0) {
-				printf("< %s", buffer);
+			while(running) {
+				FD_ZERO(&rset);
+				FD_SET(fd[0], &rset);
+				FD_SET(STDIN_FILENO, &rset);
+				select(fd[0] + 1, &rset, NULL, NULL, NULL);
+				if(FD_ISSET(fd[0], &rset)) {
+					in = read(fd[0], buffer, 1024);
+					if(in > 0) {
+						printf("< %s", buffer);		
+					} else if(in == 0) {
+						printf("< Child closed the pipe.\n");
+						running = false;
+					} else {
+						perror("Aborted");
+						running = false;
+					}
+				}
+
+				if(FD_ISSET(STDIN_FILENO, &rset)) {
+					printf("Interact with the xterm window\n");
+					// Consume characters typed into the parent
+					while(fgetc(stdin) != '\n') ;
+				}
 			}
 			// Close the input fd
 			close(fd[0]);
